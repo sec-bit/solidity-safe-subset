@@ -271,7 +271,15 @@ ASTPointer<ContractDefinition> Parser::parseContractDefinition(Token::Value _exp
 			expectToken(Token::Semicolon);
 		}
 		else if (currentTokenValue == Token::Modifier)
+#ifdef SECBIT
+		{
+			if (m_isSECBIT)
+				fatalParserError("Modifier is misleading, forbidden by SECBIT Solidity safe subset.");
+#endif
 			subNodes.push_back(parseModifierDefinition());
+#ifdef SECBIT
+		}
+#endif
 		else if (currentTokenValue == Token::Event)
 			subNodes.push_back(parseEventDefinition());
 		else if (currentTokenValue == Token::Using)
