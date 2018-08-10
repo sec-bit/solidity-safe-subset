@@ -943,6 +943,10 @@ ASTPointer<Statement> Parser::parseStatement()
 		break;
 	}
 	case Token::Assembly:
+#ifdef SECBIT
+		if (m_isSECBIT)
+			fatalParserError("Inline assembly is dangerous, forbidden by SECBIT Solidity safe subset.");
+#endif
 		return parseInlineAssembly(docString);
 	case Token::Identifier:
 		if (m_scanner->currentLiteral() == "emit")
