@@ -226,12 +226,20 @@ ASTPointer<ContractDefinition> Parser::parseContractDefinition(Token::Value _exp
 	ASTPointer<ASTString> name = expectIdentifierToken();
 	vector<ASTPointer<InheritanceSpecifier>> baseContracts;
 	if (m_scanner->currentToken() == Token::Is)
+#ifdef SECBIT
+	{
+		if (m_isSECBIT)
+			fatalParserError("Inheritance increases complexity, forbidden by SECBIT Solidity safe subset.");
+#endif
 		do
 		{
 			m_scanner->next();
 			baseContracts.push_back(parseInheritanceSpecifier());
 		}
 		while (m_scanner->currentToken() == Token::Comma);
+#ifdef SECBIT
+	}
+#endif
 	vector<ASTPointer<ASTNode>> subNodes;
 	expectToken(Token::LBrace);
 	while (true)

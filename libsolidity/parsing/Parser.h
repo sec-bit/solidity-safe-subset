@@ -35,7 +35,11 @@ class Scanner;
 class Parser: public ParserBase
 {
 public:
+#ifdef SECBIT
+	explicit Parser(ErrorReporter& _errorReporter, bool isSECBIT): ParserBase(_errorReporter), m_isSECBIT(isSECBIT) {}
+#else
 	explicit Parser(ErrorReporter& _errorReporter): ParserBase(_errorReporter) {}
+#endif
 
 	ASTPointer<SourceUnit> parse(std::shared_ptr<Scanner> const& _scanner);
 
@@ -178,6 +182,9 @@ private:
 
 	/// Flag that signifies whether '_' is parsed as a PlaceholderStatement or a regular identifier.
 	bool m_insideModifier = false;
+#ifdef SECBIT
+	bool m_isSECBIT = false;
+#endif
 };
 
 }
