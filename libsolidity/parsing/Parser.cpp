@@ -227,18 +227,14 @@ ASTPointer<ContractDefinition> Parser::parseContractDefinition(Token::Value _exp
 	vector<ASTPointer<InheritanceSpecifier>> baseContracts;
 	if (m_scanner->currentToken() == Token::Is)
 #ifdef SECBIT
-	{
-		if (m_isSECBIT)
-			fatalParserError("Inheritance increases complexity, forbidden by SECBIT Solidity safe subset.");
-#endif
+		fatalParserError("Inheritance increases complexity, forbidden by SECBIT Solidity safe subset.");
+#else
 		do
 		{
 			m_scanner->next();
 			baseContracts.push_back(parseInheritanceSpecifier());
 		}
 		while (m_scanner->currentToken() == Token::Comma);
-#ifdef SECBIT
-	}
 #endif
 	vector<ASTPointer<ASTNode>> subNodes;
 	expectToken(Token::LBrace);
@@ -272,13 +268,9 @@ ASTPointer<ContractDefinition> Parser::parseContractDefinition(Token::Value _exp
 		}
 		else if (currentTokenValue == Token::Modifier)
 #ifdef SECBIT
-		{
-			if (m_isSECBIT)
-				fatalParserError("Modifier is misleading, forbidden by SECBIT Solidity safe subset.");
-#endif
+			fatalParserError("Modifier is misleading, forbidden by SECBIT Solidity safe subset.");
+#else
 			subNodes.push_back(parseModifierDefinition());
-#ifdef SECBIT
-		}
 #endif
 		else if (currentTokenValue == Token::Event)
 			subNodes.push_back(parseEventDefinition());
@@ -944,8 +936,7 @@ ASTPointer<Statement> Parser::parseStatement()
 	}
 	case Token::Assembly:
 #ifdef SECBIT
-		if (m_isSECBIT)
-			fatalParserError("Inline assembly is dangerous, forbidden by SECBIT Solidity safe subset.");
+		fatalParserError("Inline assembly is dangerous, forbidden by SECBIT Solidity safe subset.");
 #endif
 		return parseInlineAssembly(docString);
 	case Token::Identifier:

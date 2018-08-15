@@ -35,11 +35,7 @@ class Scanner;
 class Parser: public ParserBase
 {
 public:
-#ifdef SECBIT
-	explicit Parser(ErrorReporter& _errorReporter, bool isSECBIT): ParserBase(_errorReporter), m_isSECBIT(isSECBIT) {}
-#else
 	explicit Parser(ErrorReporter& _errorReporter): ParserBase(_errorReporter) {}
-#endif
 
 	ASTPointer<SourceUnit> parse(std::shared_ptr<Scanner> const& _scanner);
 

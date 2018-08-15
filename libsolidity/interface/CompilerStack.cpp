@@ -135,11 +135,7 @@ bool CompilerStack::parse()
 		string const& path = sourcesToParse[i];
 		Source& source = m_sources[path];
 		source.scanner->reset();
-#ifdef SECBIT
-		source.ast = Parser(m_errorReporter, isSECBIT).parse(source.scanner);
-#else
 		source.ast = Parser(m_errorReporter).parse(source.scanner);
-#endif
 		if (!source.ast)
 			solAssert(!Error::containsOnlyWarnings(m_errorReporter.errors()), "Parser returned null but did not report error.");
 		else

@@ -12,7 +12,6 @@ $(SOLC):
 
 output:=$(CURDIR)/output
 expected:=$(CURDIR)/expected
-SOLC_SECBIT:=$(SOLC) --secbit-warnings output -o . --overwrite
 
 cmp-output: gen-output
 	@diff $(output) $(expected) && echo "Passed" $(CURDIR)
