@@ -1,0 +1,4 @@
+Warning: This is a pre-release compiler version, please do not use it in production.
+test.sol:15:23: Error: Inheritance increases complexity, forbidden by SECBIT Solidity safe subset.
+contract NewContract1 is ERC20Interface {
+                      ^^

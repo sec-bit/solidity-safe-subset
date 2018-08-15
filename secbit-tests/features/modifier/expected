@@ -1,0 +1,4 @@
+Warning: This is a pre-release compiler version, please do not use it in production.
+test.sol:8:2: Error: Modifier is misleading, forbidden by SECBIT Solidity safe subset.
+	modifier onlyPayloadSize(uint size) {
+	^------^
