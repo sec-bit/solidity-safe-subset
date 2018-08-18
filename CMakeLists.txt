@@ -21,6 +21,7 @@ include(EthCcache)
 # Let's find our dependencies
 include(EthDependencies)
 include(jsoncpp)
+include(releaseSolc)
 include_directories(SYSTEM ${JSONCPP_INCLUDE_DIR})
 
 find_package(Threads)
@@ -52,6 +53,7 @@ add_subdirectory(libsolc)
 
 if (NOT EMSCRIPTEN)
 	add_subdirectory(solc)
+	add_dependencies(solc-safe-subset release-solc-project)
 	add_subdirectory(liblll)
 	add_subdirectory(lllc)
 endif()

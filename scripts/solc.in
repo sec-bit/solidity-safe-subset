@@ -1,0 +1,15 @@
+#!/bin/bash
+
+curDir=$(dirname "$0")
+
+SOLC_SAFE=$curDir/solc-safe-subset
+
+SOLC_RELEASE=$curDir/solc-release
+
+$SOLC_SAFE "$@" > /dev/null
+
+if [ $? -ne 0 ]; then
+    exit $?
+fi
+
+$SOLC_RELEASE "$@"
