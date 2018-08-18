@@ -837,11 +837,24 @@ bool CommandLineInterface::processInput()
 
 		bool successful = m_compiler->compile();
 
+#ifdef SECBIT
+		for (auto const& error: m_compiler->errors()) {
+			// Skip warnings. They will show up in the release
+			// version of the compiler.
+			if(error->type() != Error::Type::Warning) {
+				formatter.printExceptionInformation(
+					*error,
+					"Error"
+				);
+			}
+		}
+#elif
 		for (auto const& error: m_compiler->errors())
 			formatter.printExceptionInformation(
 				*error,
 				(error->type() == Error::Type::Warning) ? "Warning" : "Error"
 			);
+#endif
 
 		if (!successful)
 			return false;
