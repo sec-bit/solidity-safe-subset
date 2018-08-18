@@ -300,6 +300,10 @@ bool CompilerStack::compile()
 		if (!parseAndAnalyze())
 			return false;
 
+#ifdef SECBIT
+	// Skip backend for safe subset checker.
+	return true;
+#endif
 	map<ContractDefinition const*, eth::Assembly const*> compiledContracts;
 	for (Source const* source: m_sourceOrder)
 		for (ASTPointer<ASTNode> const& node: source->ast->nodes())
