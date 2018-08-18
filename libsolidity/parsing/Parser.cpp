@@ -902,15 +902,13 @@ ASTPointer<Statement> Parser::parseStatement()
 	case Token::While:
 #ifdef SECBIT
 		fatalParserError("It's hard to identify infinite loops in while statements, forbidden by SECBIT Solidity safe subset, try for statements instead.");
-#else
-		return parseWhileStatement(docString);
 #endif
+		return parseWhileStatement(docString);
 	case Token::Do:
 #ifdef SECBIT
 		fatalParserError("It's hard to identify infinite loops in do statements, forbidden by SECBIT Solidity safe subset, try for statements instead.");
-#else
-		return parseDoWhileStatement(docString);
 #endif
+		return parseDoWhileStatement(docString);
 	case Token::For:
 		return parseForStatement(docString);
 	case Token::LBrace:
