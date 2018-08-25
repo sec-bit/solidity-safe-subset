@@ -1,0 +1,53 @@
+pragma solidity ^0.4.18;
+
+
+
+// SafeMath library from openzeppelin.
+library SafeMath {
+  function mul(uint256 _a, uint256 _b) internal pure returns (uint256) {
+    if (_a == 0) {
+      return 0;
+    }
+    uint256 c = _a * _b;
+    require(c / _a == _b);
+    return c;
+  }
+
+  function sub(uint256 _a, uint256 _b) internal pure returns (uint256) {
+    require(_b <= _a);
+    uint256 c = _a - _b;
+    return c;
+  }
+
+  function add(uint256 _a, uint256 _b) internal pure returns (uint256) {
+    uint256 c = _a + _b;
+    require(c >= _a);
+    return c;
+  }
+}
+
+contract Test {
+
+    using SafeMath for uint256;
+    function calculate(uint8 n, uint8 k) external pure returns (uint) {
+        return factorial(n) / factorial(k) / factorial(n - k);
+    }
+
+    function factorial(uint8 n) internal pure returns (uint fact) {
+        fact = 1;
+        for (uint8 i = n; i > 1; i--) {
+	     fact = fact.mul(i);
+	     fact = fact.add(fact.sub((
+			     fact.add(uint256(1))
+		     )));
+	     fact = fact.sub(uint256(i).mul(fact));
+        }
+    }
+}
+
+contract TestOk {
+	function ok() internal pure {
+		uint8 i = 255;
+		i = i + i;
+	}
+}

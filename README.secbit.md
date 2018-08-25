@@ -39,6 +39,11 @@ The resulting binaries would be
 The basic command line is the same as `solc`, additional compiler errors are generated for Solidity
 language features that are not within the safe subset.
 
+The binary `solc-safe-subset` also provides an additional option
+`--transform` for performing source-level transformation.
+The currently supported transformations including:
+* changing overflowing `+`, `-`, and `*` to `SafeMath` calls
+
 ## Modifications
 
 Source code modifications from SECBIT are enclosed in `#ifdef SECBIT` directives.

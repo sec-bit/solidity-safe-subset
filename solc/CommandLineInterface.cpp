@@ -29,6 +29,9 @@
 #include <libsolidity/parsing/Scanner.h>
 #include <libsolidity/parsing/Parser.h>
 #include <libsolidity/ast/ASTPrinter.h>
+#ifdef SECBIT
+#include <libsolidity/ast/SECBITTransformer.h>
+#endif
 #include <libsolidity/ast/ASTJsonConverter.h>
 #include <libsolidity/analysis/NameAndTypeResolver.h>
 #include <libsolidity/interface/Exceptions.h>
@@ -117,6 +120,10 @@ static string const g_strStrictAssembly = "strict-assembly";
 static string const g_strPrettyJson = "pretty-json";
 static string const g_strVersion = "version";
 static string const g_strIgnoreMissingFiles = "ignore-missing";
+#ifdef SECBIT
+static string const g_strTransform = "transform";
+static string const g_argTransform = g_strTransform;
+#endif
 
 static string const g_argAbi = g_strAbi;
 static string const g_argPrettyJson = g_strPrettyJson;
@@ -623,6 +630,9 @@ Allowed options)",
 		(g_argIgnoreMissingFiles.c_str(), "Ignore missing files.");
 	po::options_description outputComponents("Output Components");
 	outputComponents.add_options()
+#ifdef SECBIT
+		(g_argTransform.c_str(), "Apply source-level transformation. Original source is save as *.orig.")
+#endif
 		(g_argAst.c_str(), "AST of all source files.")
 		(g_argAstJson.c_str(), "AST of all source files in JSON format.")
 		(g_argAstCompactJson.c_str(), "AST of all source files in a compact JSON format.")
@@ -838,6 +848,7 @@ bool CommandLineInterface::processInput()
 		bool successful = m_compiler->compile();
 
 #ifdef SECBIT
+		bool anyError = false;
 		for (auto const& error: m_compiler->errors()) {
 			// Skip warnings. They will show up in the release
 			// version of the compiler.
@@ -846,6 +857,17 @@ bool CommandLineInterface::processInput()
 					*error,
 					"Error"
 				);
+				anyError = true;
+			}
+		}
+		if (!anyError && m_args.count(g_argTransform)) {
+			for (auto const& sourceCode: m_sourceCodes)
+			{
+				ofstream origFile(sourceCode.first + ".orig");
+				origFile << sourceCode.second;
+				ofstream transformed(sourceCode.first);
+				SECBITTransformer transformer(m_compiler->ast(sourceCode.first), sourceCode.second);
+				transformer.print(transformed);
 			}
 		}
 #elif

@@ -6,7 +6,7 @@ SOLC_SAFE=$curDir/solc-safe-subset
 
 SOLC_RELEASE=$curDir/solc-release
 
-$SOLC_SAFE "$@" > /dev/null
+$SOLC_SAFE --transform "$@" > /dev/null
 
 if [ $? -ne 0 ]; then
     exit $?
