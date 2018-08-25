@@ -190,6 +190,18 @@ void TypeChecker::checkContractDuplicateFunctions(ContractDefinition const& _con
 			functions[function->name()].push_back(function);
 		}
 
+#ifdef SECBIT
+	for (auto const& it: functions)
+	{
+		vector<FunctionDefinition const*> overload = it.second;
+		if (overload.size() > 1)
+		m_errorReporter.declarationError(
+			overload[0]->location(),
+			SecondarySourceLocation().append("Found Function overloading here:", overload[1]->location()),
+			"Function overloading is dangerous, forbitten by SECBIT Solidity safe subset."
+		);
+	  }
+#endif
 	findDuplicateDefinitions(functions, "Function with same name and arguments defined twice.");
 }
 
