@@ -198,7 +198,7 @@ void TypeChecker::checkContractDuplicateFunctions(ContractDefinition const& _con
 		m_errorReporter.declarationError(
 			overload[0]->location(),
 			SecondarySourceLocation().append("Found Function overloading here:", overload[1]->location()),
-			"Function overloading is dangerous, forbitten by SECBIT Solidity safe subset."
+			"Function overloading is dangerous, forbidden by SECBIT Solidity safe subset."
 		);
 	  }
 #endif
