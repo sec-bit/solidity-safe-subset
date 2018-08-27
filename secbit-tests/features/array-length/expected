@@ -1,0 +1,9 @@
+test.sol:50:9: Error: Direct modification of array length is dangerous, forbidden by SECBIT Solidity safe subset.
+        m_pairsOfFlags.length = newSize;
+        ^-----------------------------^
+test.sol:58:9: Error: Direct modification of array length is dangerous, forbidden by SECBIT Solidity safe subset.
+        m_pairsOfFlags.length = 0;
+        ^-----------------------^
+test.sol:67:9: Error: Direct modification of array length is dangerous, forbidden by SECBIT Solidity safe subset.
+        m_byteData.length = m_byteData.length.add(7);
+        ^------------------------------------------^

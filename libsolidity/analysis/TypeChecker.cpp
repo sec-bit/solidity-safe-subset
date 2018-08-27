@@ -1432,6 +1432,18 @@ bool TypeChecker::visit(Assignment const& _assignment)
 				type(_assignment.rightHandSide())->toString()
 			);
 	}
+#ifdef SECBIT
+	if (auto const* ma = asC<MemberAccess>(&_assignment.leftHandSide())) {
+		if (is<ArrayType>(ma->expression().annotation().type.get())
+		    && ma->memberName() == "length") {
+			m_errorReporter.typeError(
+				_assignment.location(),
+				"Direct modification of array length is dangerous, "
+				"forbidden by SECBIT Solidity safe subset."
+			);
+		}
+	}
+#endif
 	return false;
 }
 
