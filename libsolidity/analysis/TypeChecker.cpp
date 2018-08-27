@@ -73,6 +73,15 @@ TypePointer const& TypeChecker::type(Expression const& _expression) const
 TypePointer const& TypeChecker::type(VariableDeclaration const& _variable) const
 {
 	solAssert(!!_variable.annotation().type, "Type requested but not present.");
+#ifdef SECBIT
+	if(is<FixedPointType>(_variable.annotation().type.get())) {
+		m_errorReporter.typeError(
+			_variable.location(),
+			"Fixed-point type is not fully implemented yet, "
+			"forbidden by SECBIT Solidity safe subset."
+		);
+	}
+#endif
 	return _variable.annotation().type;
 }
 
