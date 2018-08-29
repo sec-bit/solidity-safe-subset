@@ -47,6 +47,7 @@ public:
 	void endVisit(ContractDefinition const&) override;
 	void endVisit(Assignment const&) override;
 	void endVisit(BinaryOperation const&) override;
+	void endVisit(FunctionCall const&) override;
 
 private:
 	// Source code.

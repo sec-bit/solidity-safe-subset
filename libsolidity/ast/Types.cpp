@@ -1679,6 +1679,16 @@ MemberList::MemberMap ArrayType::nativeMembers(ContractDefinition const*) const
 				strings{string()},
 				isByteArray() ? FunctionType::Kind::ByteArrayPush : FunctionType::Kind::ArrayPush
 			)});
+#ifdef SECBIT
+		if (isDynamicallySized() && location() == DataLocation::Storage)
+			members.push_back({"pop", make_shared<FunctionType>(
+			        TypePointers{},
+				TypePointers{},
+				strings{string()},
+				strings{string()},
+				isByteArray() ? FunctionType::Kind::ByteArrayPop : FunctionType::Kind::ArrayPop
+			)});
+#endif
 	}
 	return members;
 }
@@ -2496,6 +2506,10 @@ string FunctionType::richIdentifier() const
 	case Kind::MulMod: id += "mulmod"; break;
 	case Kind::ArrayPush: id += "arraypush"; break;
 	case Kind::ByteArrayPush: id += "bytearraypush"; break;
+#ifdef SECBIT
+	case Kind::ArrayPop: id += "arraypop"; break;
+	case Kind::ByteArrayPop: id += "bytearraypop"; break;
+#endif
 	case Kind::ObjectCreation: id += "objectcreation"; break;
 	case Kind::Assert: id += "assert"; break;
 	case Kind::Require: id += "require"; break;

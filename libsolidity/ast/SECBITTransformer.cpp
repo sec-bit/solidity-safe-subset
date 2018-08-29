@@ -264,6 +264,26 @@ void SECBITTransformer::endVisit(BinaryOperation const& _node)
 	}
 }
 
+void SECBITTransformer::endVisit(FunctionCall const& _node)
+{
+	auto const* called = asC<MemberAccess>(&_node.expression());
+	if(!called || called->memberName() != "pop") {
+		return;
+	}
+        auto const* arrTy = asC<ArrayType>(called->expression().annotation().type.get());
+	if(!(arrTy
+	     && arrTy->isDynamicallySized()
+	     && arrTy->location() == DataLocation::Storage)) {
+		return;
+	}
+	string arr = getReplacement(called->expression());
+	m_replacements.emplace(
+		make_pair(
+			_node.location(),
+		        arr + ".length > 0 ? delete "
+			+ arr + "[" + arr + ".length--] : ()"));
+}
+
 }
 }
 

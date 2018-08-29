@@ -914,6 +914,10 @@ public:
 		MulMod, ///< MULMOD
 		ArrayPush, ///< .push() to a dynamically sized array in storage
 		ByteArrayPush, ///< .push() to a dynamically sized byte array in storage
+#ifdef SECBIT
+		ArrayPop, ///< .pop() from a dynamically sized array in storage
+		ByteArrayPop, ///< .pop() from a dynamically sized byte array in storage
+#endif
 		ObjectCreation, ///< array creation using new
 		Assert, ///< assert()
 		Require, ///< require()
