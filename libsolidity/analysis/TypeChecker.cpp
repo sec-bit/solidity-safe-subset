@@ -1030,6 +1030,36 @@ bool TypeChecker::visit(WhileStatement const& _whileStatement)
 
 bool TypeChecker::visit(ForStatement const& _forStatement)
 {
+#ifdef SECBIT
+	if (_forStatement.array()) {
+		_forStatement.array()->accept(*this);
+		auto const* arrType = asC<ArrayType>(_forStatement.array()->annotation().type.get());
+		if(!arrType) {
+			m_errorReporter.typeError(
+				_forStatement.array()->location(),
+				"Expected an array in a for-each loop.");
+		}
+		auto const* decl = asC<VariableDeclarationStatement>(_forStatement.initializationExpression());
+		if(!decl) {
+			m_errorReporter.declarationError(
+				_forStatement.location(),
+				"Expected variable declaration.");
+		}
+		if(decl->initialValue()) {
+			m_errorReporter.declarationError(
+				decl->location(),
+				"Initialization value not allowed in a for-each loop.");
+		}
+		if(decl->declarations().size() != 1) {
+			m_errorReporter.declarationError(
+				decl->location(),
+				"Multiple loop variable binding not allowed in a for-each loop.");
+		}
+		decl->declarations().front()->annotation().type = arrType->baseType();
+		_forStatement.body().accept(*this);
+		return false;
+	}
+#endif
 	if (_forStatement.initializationExpression())
 		_forStatement.initializationExpression()->accept(*this);
 	if (_forStatement.condition())

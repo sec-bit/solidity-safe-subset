@@ -1039,10 +1039,33 @@ ASTPointer<ForStatement> Parser::parseForStatement(ASTPointer<ASTString> const& 
 	ASTPointer<Statement> initExpression;
 	ASTPointer<Expression> conditionExpression;
 	ASTPointer<ExpressionStatement> loopExpression;
+#ifdef SECBIT
+	ASTPointer<Expression> arrayExpression;
+#endif
 	expectToken(Token::For);
 	expectToken(Token::LParen);
 
 	// LTODO: Maybe here have some predicate like peekExpression() instead of checking for semicolon and RParen?
+#ifdef SECBIT
+	if (m_scanner->currentToken() == Token::Var
+	    && m_scanner->peekNextToken() == Token::Identifier) {
+		// for(var x : array)
+		initExpression = parseSimpleStatement(ASTPointer<ASTString>());
+		if(m_scanner->currentToken() == Token::Colon) {
+			expectToken(Token::Colon);
+			arrayExpression = parseExpression();
+		} else {
+			// normal for loop.
+			expectToken(Token::Semicolon);
+			if (m_scanner->currentToken() != Token::Semicolon)
+				conditionExpression = parseExpression();
+			expectToken(Token::Semicolon);
+
+			if (m_scanner->currentToken() != Token::RParen)
+				loopExpression = parseExpressionStatement(ASTPointer<ASTString>());
+		}
+	} else {
+#endif
 	if (m_scanner->currentToken() != Token::Semicolon)
 		initExpression = parseSimpleStatement(ASTPointer<ASTString>());
 	expectToken(Token::Semicolon);
@@ -1053,6 +1076,9 @@ ASTPointer<ForStatement> Parser::parseForStatement(ASTPointer<ASTString> const& 
 
 	if (m_scanner->currentToken() != Token::RParen)
 		loopExpression = parseExpressionStatement(ASTPointer<ASTString>());
+#ifdef SECBIT
+	}
+#endif
 	expectToken(Token::RParen);
 
 	ASTPointer<Statement> body = parseStatement();
@@ -1062,6 +1088,9 @@ ASTPointer<ForStatement> Parser::parseForStatement(ASTPointer<ASTString> const& 
 		initExpression,
 		conditionExpression,
 		loopExpression,
+#ifdef SECBIT
+		arrayExpression,
+#endif
 		body
 	);
 }

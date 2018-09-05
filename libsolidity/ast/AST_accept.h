@@ -473,6 +473,10 @@ void ForStatement::accept(ASTVisitor& _visitor)
 			m_condExpression->accept(_visitor);
 		if (m_loopExpression)
 			m_loopExpression->accept(_visitor);
+#ifdef SECBIT
+		if (m_arrayExpression)
+			m_arrayExpression->accept(_visitor);
+#endif
 		m_body->accept(_visitor);
 	}
 	_visitor.endVisit(*this);
@@ -488,6 +492,10 @@ void ForStatement::accept(ASTConstVisitor& _visitor) const
 			m_condExpression->accept(_visitor);
 		if (m_loopExpression)
 			m_loopExpression->accept(_visitor);
+#ifdef SECBIT
+		if (m_arrayExpression)
+			m_arrayExpression->accept(_visitor);
+#endif
 		m_body->accept(_visitor);
 	}
 	_visitor.endVisit(*this);

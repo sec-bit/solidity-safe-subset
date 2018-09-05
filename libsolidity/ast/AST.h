@@ -1167,12 +1167,18 @@ public:
 		ASTPointer<Statement> const& _initExpression,
 		ASTPointer<Expression> const& _conditionExpression,
 		ASTPointer<ExpressionStatement> const& _loopExpression,
+#ifdef SECBIT
+		ASTPointer<Expression> const& _arrayExpression,
+#endif
 		ASTPointer<Statement> const& _body
 	):
 		BreakableStatement(_location, _docString),
 		m_initExpression(_initExpression),
 		m_condExpression(_conditionExpression),
 		m_loopExpression(_loopExpression),
+#ifdef SECBIT
+		m_arrayExpression(_arrayExpression),
+#endif
 		m_body(_body)
 	{}
 	virtual void accept(ASTVisitor& _visitor) override;
@@ -1181,6 +1187,9 @@ public:
 	Statement const* initializationExpression() const { return m_initExpression.get(); }
 	Expression const* condition() const { return m_condExpression.get(); }
 	ExpressionStatement const* loopExpression() const { return m_loopExpression.get(); }
+#ifdef SECBIT
+	Expression const* array() const { return m_arrayExpression.get(); }
+#endif
 	Statement const& body() const { return *m_body; }
 
 private:
@@ -1190,6 +1199,10 @@ private:
 	ASTPointer<Expression> m_condExpression;
 	/// For statement's loop expresion. for(;;XXX). Can be empty
 	ASTPointer<ExpressionStatement> m_loopExpression;
+#ifdef SECBIT
+	/// For each statement's array expresion. for(var x : XXX). Can be empty
+	ASTPointer<Expression> m_arrayExpression;
+#endif
 	/// The body of the loop
 	ASTPointer<Statement> m_body;
 };
