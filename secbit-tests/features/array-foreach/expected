@@ -1,0 +1,25 @@
+pragma solidity ^0.4.16;
+
+contract ArrayContract {
+    uint[2**20] m_aLotOfIntegers;
+    bool[2][] m_pairsOfFlags;
+    bytes m_byteData;
+
+    function byteArrays(bytes data) public {
+	for(uint x = 0; x < data.length; x++){
+	    data[x] = byte(8);
+	    for(uint y = 0; y < m_byteData.length; y++){
+	        m_byteData[y] = byte(7);
+	    }
+	    for(uint z = 0; z < m_pairsOfFlags.length; z++){
+	        m_pairsOfFlags[z][0] = true;
+	    }
+	    for(uint j = 0; j < m_pairsOfFlags[1].length; j++){
+	        m_pairsOfFlags[1][j] = true;
+	    }
+	    for(uint8 i = 0; i < 10; i++) {
+		i;
+	    }
+	}
+    }
+}

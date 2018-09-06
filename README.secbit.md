@@ -45,6 +45,7 @@ The binary `solc-safe-subset` also provides an additional option
 The currently supported transformations including:
 * changing overflowing `+`, `-`, and `*` to `SafeMath` calls
 * changing `array.pop()` to `array.length > 0 ? delete array[array.length--] : ()`
+* changing array for-each loop `for(var x : arr) {...}` to `for(uint x = 0; x < arr.length; x++) {...}/x/arr[x]/`
 
 ## Modifications
 

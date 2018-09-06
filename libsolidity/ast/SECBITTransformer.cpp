@@ -284,6 +284,69 @@ void SECBITTransformer::endVisit(FunctionCall const& _node)
 			+ arr + "[" + arr + ".length--] : ()"));
 }
 
+bool SECBITTransformer::visit(ForStatement const& _node)
+{
+	auto const* array = _node.array();
+
+	if(!array) {
+		return true;
+	}
+
+	// Transform a for-each loop.
+	auto const* init =
+		asC<VariableDeclarationStatement>(
+			_node.initializationExpression());
+
+	auto const* decl = init->declarations().front().get();
+
+	string const& loopVarName = decl->name();
+
+	string arrayText = getReplacement(*array);
+
+	// For 'for(var x : arr) /body/',
+	// add replacement of x -> arr[x].
+	m_forEachLoopVarReplacement.emplace(
+		make_pair(
+			decl,
+			arrayText + "[" + loopVarName + "]"));
+
+	// Visit body.
+	_node.body().accept(*this);
+
+	// Remove this mapping.
+	m_forEachLoopVarReplacement.erase(decl);
+
+	// Change the loop to:
+	// for(uint x = 0; x < arr.length; x++) /body[x/arr[x]]/
+	m_replacements.emplace(
+		make_pair(
+			_node.location(),
+			"for(uint "
+			+ loopVarName + " = 0; "
+			+ loopVarName + " < "
+			+ arrayText + ".length; "
+			// This won't overflow before out-of-gass.
+			+ loopVarName + "++)"
+			+ getReplacement(_node.body())));
+
+	// Already visited.
+	return false;
+}
+
+void SECBITTransformer::endVisit(Identifier const& _node)
+{
+	if(auto const* decl = _node.annotation().referencedDeclaration) {
+		// If this is a loop var, replace it.
+		auto i = m_forEachLoopVarReplacement.find(decl);
+		if(i != end(m_forEachLoopVarReplacement)) {
+			m_replacements.emplace(
+				make_pair(
+					_node.location(),
+					i->second));
+		}
+	}
+}
+
 }
 }
 

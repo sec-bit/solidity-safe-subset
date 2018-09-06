@@ -5,4 +5,6 @@ TEST_SOL:=test.sol
 tests: gen-output cmp-output
 
 gen-output:
-	@$(SOLC)-safe-subset $(TEST_SOL) 2> $(output) || exit 0
+	@$(SOLC) $(TEST_SOL)
+	@mv $(TEST_SOL) output
+	@mv $(TEST_SOL).orig $(TEST_SOL)

@@ -43,11 +43,13 @@ public:
 
 	bool visit(ContractDefinition const&) override;
 	bool visit(UsingForDirective const&) override;
+	bool visit(ForStatement const&) override;
 
 	void endVisit(ContractDefinition const&) override;
 	void endVisit(Assignment const&) override;
 	void endVisit(BinaryOperation const&) override;
 	void endVisit(FunctionCall const&) override;
+	void endVisit(Identifier const&) override;
 
 private:
 	// Source code.
@@ -71,6 +73,9 @@ private:
 	bool m_hasReplace = false;
 	// True if we are still in the first contract in the source file.
 	bool m_firstContract = true;
+
+	// Loop variable declaration and replacement for for-each loops.
+	std::map<Declaration const*, std::string> m_forEachLoopVarReplacement;
 };
 
 }
