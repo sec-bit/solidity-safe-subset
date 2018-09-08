@@ -39,6 +39,7 @@
 #include <libsolidity/analysis/PostTypeChecker.h>
 #include <libsolidity/analysis/SyntaxChecker.h>
 #include <libsolidity/analysis/ViewPureChecker.h>
+#include <libsolidity/analysis/CallGraph.h>
 #include <libsolidity/codegen/Compiler.h>
 #include <libsolidity/formal/SMTChecker.h>
 #include <libsolidity/interface/ABI.h>
@@ -215,6 +216,20 @@ bool CompilerStack::analyze()
 				if (ContractDefinition* contract = dynamic_cast<ContractDefinition*>(node.get()))
 					if (!typeChecker.checkTypeRequirements(*contract))
 						noErrors = false;
+
+#ifdef SECBIT
+		if (noErrors)
+		{
+			CallGraph callGraph(m_errorReporter);
+			for (Source const* source: m_sourceOrder)
+				for (ASTPointer<ASTNode> const& node: source->ast->nodes())
+				{
+					callGraph.build(*node);
+					if (!callGraph.checkRecursiveCall())
+						noErrors = false;
+				}
+		}
+#endif
 
 		if (noErrors)
 		{
