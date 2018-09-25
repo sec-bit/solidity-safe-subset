@@ -43,6 +43,12 @@ private:
 		CFGNode const* _functionEntry,
 		CFGNode const* _functionExit
 	) const;
+#ifdef SECBIT
+	void checkExitWithoutReturn(
+		FunctionDefinition const& _function,
+		CFGNode const* _functionExit
+	) const;
+#endif
 
 	CFG const& m_cfg;
 	ErrorReporter& m_errorReporter;

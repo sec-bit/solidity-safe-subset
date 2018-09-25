@@ -30,6 +30,9 @@ bool ControlFlowAnalyzer::visit(FunctionDefinition const& _function)
 {
 	auto const& functionFlow = m_cfg.functionFlow(_function);
 	checkUnassignedStorageReturnValues(_function, functionFlow.entry, functionFlow.exit);
+#ifdef SECBIT
+	checkExitWithoutReturn(_function, functionFlow.exit);
+#endif
 	return false;
 }
 
@@ -154,3 +157,19 @@ void ControlFlowAnalyzer::checkUnassignedStorageReturnValues(
 		}
 	}
 }
+
+#ifdef SECBIT
+void ControlFlowAnalyzer::checkExitWithoutReturn(FunctionDefinition const& _function, CFGNode const* _functionExit) const
+{
+	if (_function.returnParameterList()->parameters().empty())
+		return;
+
+	for (auto const& lastNodeBeforeExit: _functionExit->entries)
+	{
+		if (lastNodeBeforeExit->block.returnStatement == nullptr)
+			m_errorReporter.fatalParserError(_function.location(),
+				"Some of the exits do not have return statements, forbidden by SECBIT Solidity safe subset.");
+	}
+	return;
+}
+#endif
