@@ -600,7 +600,11 @@ protected:
 	/// @returns the suffix computed from the reference part to be used by identifier();
 	std::string identifierLocationSuffix() const;
 
+#ifdef SECBIT
+	DataLocation m_location = DataLocation::Memory;
+#else
 	DataLocation m_location = DataLocation::Storage;
+#endif
 	bool m_isPointer = true;
 };
 
