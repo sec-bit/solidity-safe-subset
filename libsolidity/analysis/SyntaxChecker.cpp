@@ -174,7 +174,11 @@ bool SyntaxChecker::visit(Break const& _breakStatement)
 
 bool SyntaxChecker::visit(Throw const& _throwStatement)
 {
+#ifndef SECBIT
 	bool const v050 = m_sourceUnit->annotation().experimentalFeatures.count(ExperimentalFeature::V050);
+#else
+	bool const v050 = true;
+#endif
 
 	if (v050)
 		m_errorReporter.syntaxError(
@@ -192,7 +196,11 @@ bool SyntaxChecker::visit(Throw const& _throwStatement)
 
 bool SyntaxChecker::visit(UnaryOperation const& _operation)
 {
+#ifndef SECBIT
 	bool const v050 = m_sourceUnit->annotation().experimentalFeatures.count(ExperimentalFeature::V050);
+#else
+	bool const v050 = true;
+#endif
 
 	if (_operation.getOperator() == Token::Add)
 	{
@@ -212,7 +220,11 @@ bool SyntaxChecker::visit(PlaceholderStatement const&)
 
 bool SyntaxChecker::visit(FunctionDefinition const& _function)
 {
+#ifndef SECBIT
 	bool const v050 = m_sourceUnit->annotation().experimentalFeatures.count(ExperimentalFeature::V050);
+#else
+	bool const v050 = true;
+#endif
 
 	if (v050 && _function.noVisibilitySpecified())
 		m_errorReporter.syntaxError(_function.location(), "No visibility specified.");
@@ -262,7 +274,11 @@ bool SyntaxChecker::visit(FunctionTypeName const& _node)
 
 bool SyntaxChecker::visit(VariableDeclaration const& _declaration)
 {
+#ifndef SECBIT
 	bool const v050 = m_sourceUnit->annotation().experimentalFeatures.count(ExperimentalFeature::V050);
+#else
+	bool const v050 = true;
+#endif
 
 	if (!_declaration.typeName())
 	{
@@ -276,7 +292,11 @@ bool SyntaxChecker::visit(VariableDeclaration const& _declaration)
 
 bool SyntaxChecker::visit(StructDefinition const& _struct)
 {
+#ifndef SECBIT
 	bool const v050 = m_sourceUnit->annotation().experimentalFeatures.count(ExperimentalFeature::V050);
+#else
+	bool const v050 = true;
+#endif
 
 	if (_struct.members().empty())
 	{

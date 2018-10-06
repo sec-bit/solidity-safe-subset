@@ -293,7 +293,11 @@ void TypeChecker::checkContractAbstractFunctions(ContractDefinition const& _cont
 
 void TypeChecker::checkContractBaseConstructorArguments(ContractDefinition const& _contract)
 {
+#ifndef SECBIT
 	bool const v050 = _contract.sourceUnit().annotation().experimentalFeatures.count(ExperimentalFeature::V050);
+#else
+	bool const v050 = true;
+#endif
 
 	vector<ContractDefinition const*> const& bases = _contract.annotation().linearizedBaseContracts;
 
@@ -349,7 +353,11 @@ void TypeChecker::annotateBaseConstructorArguments(
 	ASTNode const* _argumentNode
 )
 {
+#ifndef SECBIT
 	bool const v050 = _currentContract.sourceUnit().annotation().experimentalFeatures.count(ExperimentalFeature::V050);
+#else
+	bool const v050 = true;
+#endif
 
 	solAssert(_baseConstructor, "");
 	solAssert(_argumentNode, "");
@@ -574,7 +582,11 @@ void TypeChecker::endVisit(InheritanceSpecifier const& _inheritance)
 
 	if (arguments)
 	{
+#ifndef SECBIT
 		bool v050 = m_scope->sourceUnit().annotation().experimentalFeatures.count(ExperimentalFeature::V050);
+#else
+		bool v050 = true;
+#endif
 
 		if (parameterTypes.size() != arguments->size())
 		{
@@ -773,6 +785,12 @@ bool TypeChecker::visit(VariableDeclaration const& _variable)
 			m_errorReporter.typeError(_variable.location(), "Uninitialized \"constant\" variable.");
 		else if (!_variable.value()->annotation().isPure)
 		{
+#ifdef SECBIT
+			m_errorReporter.fatalTypeError(
+				_variable.value()->location(),
+				"Initial value for constant variable has to be compile-time constant."
+			);
+#else
 			if (_variable.sourceUnit().annotation().experimentalFeatures.count(ExperimentalFeature::V050))
 				m_errorReporter.typeError(
 					_variable.value()->location(),
@@ -784,6 +802,7 @@ bool TypeChecker::visit(VariableDeclaration const& _variable)
 					"Initial value for constant variable has to be compile-time constant. "
 					"This will fail to compile with the next breaking version change."
 				);
+#endif
 		}
 	}
 	if (!_variable.isStateVariable())
@@ -808,7 +827,7 @@ bool TypeChecker::visit(VariableDeclaration const& _variable)
 				m_errorReporter.typeError(_variable.location(), "Array is too large to be encoded.");
 #ifdef SECBIT
 	if(is<FixedPointType>(_variable.annotation().type.get())) {
-		m_errorReporter.typeError(
+		m_errorReporter.fatalTypeError(
 			_variable.location(),
 			"Fixed-point type is not fully implemented yet, "
 			"forbidden by SECBIT Solidity safe subset."
@@ -1495,7 +1514,7 @@ bool TypeChecker::visit(Assignment const& _assignment)
 	if (auto const* ma = asC<MemberAccess>(&_assignment.leftHandSide())) {
 		if (is<ArrayType>(ma->expression().annotation().type.get())
 		    && ma->memberName() == "length") {
-			m_errorReporter.typeError(
+			m_errorReporter.fatalTypeError(
 				_assignment.location(),
 				"Direct modification of array length is dangerous, "
 				"forbidden by SECBIT Solidity safe subset."
@@ -1532,7 +1551,11 @@ bool TypeChecker::visit(TupleExpression const& _tuple)
 	}
 	else
 	{
+#ifndef SECBIT
 		bool const v050 = m_scope->sourceUnit().annotation().experimentalFeatures.count(ExperimentalFeature::V050);
+#else
+		bool const v050 = true;
+#endif
 		bool isPure = true;
 		TypePointer inlineArrayType;
 
@@ -1787,7 +1810,11 @@ bool TypeChecker::visit(FunctionCall const& _functionCall)
 	else
 		_functionCall.annotation().type = make_shared<TupleType>(returnTypes);
 
+#ifndef SECBIT
 	bool const v050 = m_scope->sourceUnit().annotation().experimentalFeatures.count(ExperimentalFeature::V050);
+#else
+	bool const v050 = true;
+#endif
 
 	if (auto functionName = dynamic_cast<Identifier const*>(&_functionCall.expression()))
 	{
@@ -1806,7 +1833,11 @@ bool TypeChecker::visit(FunctionCall const& _functionCall)
 	}
 	if (!m_insideEmitStatement && functionType->kind() == FunctionType::Kind::Event)
 	{
+#ifndef SECBIT
 		if (m_scope->sourceUnit().annotation().experimentalFeatures.count(ExperimentalFeature::V050))
+#else
+		if (v050)
+#endif
 			m_errorReporter.typeError(_functionCall.location(), "Event invocations have to be prefixed by \"emit\".");
 		else
 			m_errorReporter.warning(_functionCall.location(), "Invoking events without \"emit\" prefix is deprecated.");
@@ -2376,7 +2407,11 @@ void TypeChecker::endVisit(ElementaryTypeNameExpression const& _expr)
 
 void TypeChecker::endVisit(Literal const& _literal)
 {
+#ifndef SECBIT
 	bool const v050 = m_scope->sourceUnit().annotation().experimentalFeatures.count(ExperimentalFeature::V050);
+#else
+	bool const v050 = true;
+#endif
 
 	if (_literal.looksLikeAddress())
 	{

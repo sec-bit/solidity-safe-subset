@@ -150,7 +150,11 @@ bool StaticAnalyzer::visit(ExpressionStatement const& _statement)
 
 bool StaticAnalyzer::visit(MemberAccess const& _memberAccess)
 {
+#ifndef SECBIT
 	bool const v050 = m_currentContract->sourceUnit().annotation().experimentalFeatures.count(ExperimentalFeature::V050);
+#else
+	bool const v050 = true;
+#endif
 
 	if (MagicType const* type = dynamic_cast<MagicType const*>(_memberAccess.expression().annotation().type.get()))
 	{
