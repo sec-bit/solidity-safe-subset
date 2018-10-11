@@ -96,10 +96,9 @@ bool CallGraph::visit(ContractDefinition const& _contract)
 	return true;
 }
 
-void CallGraph::endVisit(ContractDefinition const& _contract)
+void CallGraph::endVisit(ContractDefinition const&)
 {
 	m_definedFunctions.clear();
-	_contract.name();
 }
 
 bool CallGraph::visit(FunctionDefinition const& _function)
@@ -108,10 +107,9 @@ bool CallGraph::visit(FunctionDefinition const& _function)
 	return true;
 }
 
-void CallGraph::endVisit(FunctionDefinition const& _function)
+void CallGraph::endVisit(FunctionDefinition const&)
 {
 	m_currentFunction.pop_back();
-	_function.name();
 }
   
 bool CallGraph::visit(FunctionCall const& _function)

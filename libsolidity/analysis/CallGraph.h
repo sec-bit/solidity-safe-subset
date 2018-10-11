@@ -56,8 +56,8 @@ public:
 	virtual bool visit(FunctionDefinition const& _function) override;
 	virtual bool visit(FunctionCall const& _function) override;
 
-	virtual void endVisit(ContractDefinition const& _contract) override;
-	virtual void endVisit(FunctionDefinition const& _function) override;
+	virtual void endVisit(ContractDefinition const&) override;
+	virtual void endVisit(FunctionDefinition const&) override;
 
 	void addEdge(FunctionDefinition const* _caller, FunctionDefinition const* _callee);
 	void deleteEdge(FunctionDefinition const* _caller, FunctionDefinition const* _callee);
