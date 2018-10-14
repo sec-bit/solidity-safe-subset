@@ -1339,6 +1339,13 @@ bool TypeChecker::visit(VariableDeclarationStatement const& _statement)
 					". This is probably not desired. Use an explicit type to silence this warning."
 				);
 			}
+#ifdef SECBIT
+			else if (valueComponentType->category() == Type::Category::Integer) {
+				m_errorReporter.typeError(
+					_statement.location(),
+					"Use explicit types for integers. The result of type inference might not be desirable.");
+			}
+#endif
 
 			var.accept(*this);
 		}
