@@ -274,11 +274,7 @@ bool SyntaxChecker::visit(FunctionTypeName const& _node)
 
 bool SyntaxChecker::visit(VariableDeclaration const& _declaration)
 {
-#ifndef SECBIT
 	bool const v050 = m_sourceUnit->annotation().experimentalFeatures.count(ExperimentalFeature::V050);
-#else
-	bool const v050 = true;
-#endif
 
 	if (!_declaration.typeName())
 	{

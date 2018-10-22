@@ -1,24 +1,3 @@
 test.sol:4:2: Error: Fixed-point type is not fully implemented yet, forbidden by SECBIT Solidity safe subset.
 	fixed a;
 	^-----^
-test.sol:5:2: Error: Fixed-point type is not fully implemented yet, forbidden by SECBIT Solidity safe subset.
-	ufixed b;
-	^------^
-test.sol:6:2: Error: Fixed-point type is not fully implemented yet, forbidden by SECBIT Solidity safe subset.
-	ufixed128x18 c;
-	^------------^
-test.sol:7:2: Error: Fixed-point type is not fully implemented yet, forbidden by SECBIT Solidity safe subset.
-	fixed128x18 d;
-	^-----------^
-test.sol:9:3: Error: Fixed-point type is not fully implemented yet, forbidden by SECBIT Solidity safe subset.
-		fixed a;
-		^-----^
-test.sol:10:3: Error: Fixed-point type is not fully implemented yet, forbidden by SECBIT Solidity safe subset.
-		ufixed b;
-		^------^
-test.sol:11:3: Error: Fixed-point type is not fully implemented yet, forbidden by SECBIT Solidity safe subset.
-		ufixed128x18 c;
-		^------------^
-test.sol:12:3: Error: Fixed-point type is not fully implemented yet, forbidden by SECBIT Solidity safe subset.
-		fixed128x18 d;
-		^-----------^
