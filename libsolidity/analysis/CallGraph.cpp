@@ -118,6 +118,11 @@ bool CallGraph::visit(FunctionCall const& _function)
 
 	// find FunctionDefinition in definedFunctions for callee
 	auto functionName = dynamic_cast<Identifier const*>(&_function.expression());
+	if(!functionName) {
+		// TODO: should this be true? Since there could be calls in arguments, etc.
+		// Or, just change this function to endVisit.
+		return false;
+	}
 	for (vector<FunctionDefinition const*>::iterator iter = m_definedFunctions.begin();
 	     iter != m_definedFunctions.end(); iter++)
 	{
