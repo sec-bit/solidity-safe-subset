@@ -2044,6 +2044,18 @@ bool TypeChecker::visit(FunctionCall const& _functionCall)
 				}
 		}
 	}
+#ifndef SECBIT
+	if(_functionCall.annotation().kind == FunctionType::Kind::DelegateCall ||
+	   _functionCall.annotation().kind == FunctionType::Kind::BareDelegateCall) {
+		if(auto const* ma = asC<MemberAccess>(&_call.expression())) {
+			if(ma->memberName() == "delegatecall") {
+				m_errorReporter.typeError(
+					_functionCall.location(),
+					"'delegatecall' is unsafe and should not be used.");
+			}
+		}
+	}
+#endif
 
 	return false;
 }
