@@ -246,7 +246,9 @@ bool ControlFlowBuilder::visit(Return const& _return)
 	solAssert(!m_currentNode->block.returnStatement, "");
 	m_currentNode->block.returnStatement = &_return;
 	connect(m_currentNode, m_currentFunctionFlow.exit);
+#ifndef SECBIT
 	m_currentNode = newLabel();
+#endif
 	return true;
 }
 

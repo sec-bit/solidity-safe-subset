@@ -164,11 +164,25 @@ void ControlFlowAnalyzer::checkExitWithoutReturn(FunctionDefinition const& _func
 	if (_function.returnParameterList()->parameters().empty())
 		return;
 
-	for (auto const& lastNodeBeforeExit: _functionExit->entries)
+	for (CFGNode* lastNodeBeforeExit: _functionExit->entries)
 	{
-		if (lastNodeBeforeExit->block.returnStatement == nullptr)
-			m_errorReporter.fatalParserError(_function.location(),
-				"Some of the exits do not have return statements, forbidden by SECBIT Solidity safe subset.");
+		// Search back for a return, due to the weirdness of the CFG:
+		// the return statement's expression is in a different block
+		// than the statement's block. While this is fixed, there is
+		// still a second out-going edge from the return block to a
+		// label block and then to the exit block, which still needs
+		// to be handled here.
+	        CFGNode* last = lastNodeBeforeExit;
+		while (!last->block.returnStatement
+		       && !last->entries.empty()) {
+			last = last->entries[0];
+		}
+		if(!!last->block.returnStatement) {
+			continue;
+		}
+		m_errorReporter.fatalParserError(
+			_function.location(),
+			"Some of the exits do not have return statements, forbidden by SECBIT Solidity safe subset.");
 	}
 	return;
 }
